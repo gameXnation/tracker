@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "972752572171",
+    "project_id": "tracker-app-78de9",
+    "storage_bucket": "tracker-app-78de9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:972752572171:android:9936e870766022c415dc0e",
+        "android_client_info": {
+          "package_name": "com.gamexnation.stealthtracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUsZuCq-IGjyOka80rAJUvH6esAUjNsmk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
