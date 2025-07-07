@@ -1,0 +1,12 @@
+{
+  "name": "Flutter Dev Container",
+  "image": "cirrusci/flutter:stable",
+  "forwardPorts": [3000],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Dart-Code.flutter"
+      ]
+    }
+  }
+}
