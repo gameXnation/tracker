@@ -1,14 +1,12 @@
-plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-}
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services' // ✅ Firebase plugin
 
 android {
-    namespace "com.example.stealthtracker"
+    namespace "com.riteshdev.stealthtracker"
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.gamexnation.stealthtracker"
+        applicationId "com.riteshdev.stealthtracker"
         minSdk 21
         targetSdk 34
         versionCode 1
@@ -24,5 +22,7 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation platform('com.google.firebase:firebase-bom:33.16.0')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-database'
 }
