@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services' // ✅ Firebase plugin
+apply plugin: 'com.google.gms.google-services' // ✅ Add this line
 
 android {
     namespace "com.riteshdev.stealthtracker"
@@ -22,7 +22,9 @@ android {
 }
 
 dependencies {
-    implementation platform('com.google.firebase:firebase-bom:33.16.0')
-    implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.firebase:firebase-database'
+    implementation platform('com.google.firebase:firebase-bom:33.16.0') // ✅ Firebase BoM
+    implementation 'com.google.firebase:firebase-analytics'             // ✅ Firebase Analytics
+    implementation 'com.google.firebase:firebase-database'              // ✅ Firebase Realtime Database
+
+    // Other dependencies (if any)
 }

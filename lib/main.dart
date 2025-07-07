@@ -1,118 +1,95 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:background_fetch/background_fetch.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:battery_plus/battery_plus.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
-
-late DatabaseReference db;
-late String deviceId;
-
-void backgroundFetchHeadlessTask(HeadlessTask task) async {
-  await Firebase.initializeApp();
-  Position pos = await Geolocator.getCurrentPosition();
-  db = FirebaseDatabase.instance.ref();
-  await db.child("locations/$deviceId").set({
-    "lat": pos.latitude,
-    "lng": pos.longitude,
-    "timestamp": DateTime.now().millisecondsSinceEpoch
-  });
-  BackgroundFetch.finish(task.taskId);
-}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  deviceId = "device-${DateTime.now().millisecondsSinceEpoch}";
-  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
   runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  String batteryLevel = "Loading...";
-  String deviceName = "Unknown";
-  String networkStatus = "Checking...";
-
-  @override
-  void initState() {
-    super.initState();
-    initBackgroundFetch();
-    loadFakeSystemInfo();
-  }
-
-  void initBackgroundFetch() async {
-    await BackgroundFetch.configure(
-      BackgroundFetchConfig(
-        minimumFetchInterval: 15,
-        stopOnTerminate: false,
-        enableHeadless: true,
-        startOnBoot: true,
-      ),
-      (taskId) async {
-        Position pos = await Geolocator.getCurrentPosition();
-        await FirebaseDatabase.instance.ref("locations/$deviceId").set({
-          "lat": pos.latitude,
-          "lng": pos.longitude,
-          "timestamp": DateTime.now().millisecondsSinceEpoch
-        });
-        BackgroundFetch.finish(taskId);
-      },
-      (taskId) async {
-        BackgroundFetch.finish(taskId);
-      },
-    );
-    BackgroundFetch.start();
-  }
-
-  void loadFakeSystemInfo() async {
-    final battery = Battery();
-    final info = DeviceInfoPlugin();
-    final androidInfo = await info.androidInfo;
-    final connectivity = await Connectivity().checkConnectivity();
-
-    setState(() {
-      deviceName = androidInfo.model ?? "Android Device";
-      networkStatus = connectivity == ConnectivityResult.wifi
-          ? "Wi-Fi"
-          : connectivity == ConnectivityResult.mobile
-              ? "Mobile Data"
-              : "Offline";
-    });
-
-    battery.batteryLevel.then((level) {
-      setState(() {
-        batteryLevel = "$level%";
-      });
-    });
-  }
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'System Info',
-      home: Scaffold(
-        appBar: AppBar(title: Text("System Info")),
-        body: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("📱 Device Name: $deviceName", style: TextStyle(fontSize: 18)),
-              SizedBox(height: 10),
-              Text("🔋 Battery Level: $batteryLevel", style: TextStyle(fontSize: 18)),
-              SizedBox(height: 10),
-              Text("🌐 Network: $networkStatus", style: TextStyle(fontSize: 18)),
-              SizedBox(height: 10),
-              Text("✅ Status: All systems operational", style: TextStyle(fontSize: 18)),
-            ],
-          ),
+      title: 'Stealth Tracker',
+      theme: ThemeData(
+        primarySwatch: Colors.deepPurple,
+      ),
+      home: const FirebaseDemoPage(),
+    );
+  }
+}
+
+class FirebaseDemoPage extends StatefulWidget {
+  const FirebaseDemoPage({super.key});
+
+  @override
+  State<FirebaseDemoPage> createState() => _FirebaseDemoPageState();
+}
+
+class _FirebaseDemoPageState extends State<FirebaseDemoPage> {
+  final DatabaseReference _dbRef = FirebaseDatabase.instance.ref("test_data");
+  final TextEditingController _controller = TextEditingController();
+  String _fetchedValue = "";
+
+  void _writeToFirebase() async {
+    final value = _controller.text.trim();
+    if (value.isNotEmpty) {
+      await _dbRef.set({"message": value});
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Data written: $value")),
+      );
+    }
+  }
+
+  void _readFromFirebase() async {
+    final snapshot = await _dbRef.get();
+    if (snapshot.exists) {
+      setState(() {
+        _fetchedValue = snapshot.child("message").value.toString();
+      });
+    } else {
+      setState(() {
+        _fetchedValue = "No data found.";
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Firebase Realtime DB Demo"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                labelText: "Enter message",
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _writeToFirebase,
+              child: const Text("Write to Firebase"),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _readFromFirebase,
+              child: const Text("Read from Firebase"),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              "Fetched from Firebase: $_fetchedValue",
+              style: const TextStyle(fontSize: 16),
+            ),
+          ],
         ),
       ),
     );

@@ -1,6 +1,6 @@
 name: stealth_tracker
-description: A stealth background location tracker with Firebase and a fake system info UI.
-publish_to: 'none' # This is a private app
+description: A stealth tracking app powered by Firebase
+publish_to: "none" # This is a private project
 
 version: 1.0.0+1
 
@@ -11,25 +11,26 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # Firebase
-  firebase_core: ^2.27.0
-  firebase_database: ^10.4.0
+  # Firebase core (required)
+  firebase_core: ^2.32.0
 
-  # Location tracking
-  geolocator: ^10.1.0
-  background_fetch: ^1.2.0
+  # Firebase Realtime Database
+  firebase_database: ^10.5.7
 
-  # Device info and system stats
-  device_info_plus: ^9.1.2
-  battery_plus: ^4.1.0
-  connectivity_plus: ^5.0.2
+  # Firebase Analytics (optional but useful)
+  firebase_analytics: ^10.10.7
 
-  # UI
+  # Add other Firebase packages here if needed
+  # firebase_auth: ^4.17.7
+  # cloud_firestore: ^5.17.7
+
+  # UI and utility packages (optional)
   cupertino_icons: ^1.0.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
   flutter_lints: ^3.0.1
 
 flutter:
